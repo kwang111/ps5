@@ -1,12 +1,14 @@
 import csv
 from math import log
 from collections import defaultdict, Counter
+from posixpath import split
 from re import A, X
 import this
 from datetime import datetime
 import statistics
 import string
 import pycountry_convert as pc
+import random
 
 
 """
@@ -302,35 +304,35 @@ def add_features(loans):
 
 		
 		## loan amt
-		if(loan_dict['loan_amount'] >= 0) and (loan_dict['loan_amount'] < 300):
-			loan_dict.update({'loan_amt_0-300':1})
-		else:
-			loan_dict.update({'loan_amt_0-300':0})
+		# if(loan_dict['loan_amount'] >= 0) and (loan_dict['loan_amount'] < 300):
+		# 	loan_dict.update({'loan_amt_0-300':1})
+		# else:
+		# 	loan_dict.update({'loan_amt_0-300':0})
 		
-		if(loan_dict['loan_amount'] >= 300) and (loan_dict['loan_amount'] < 600):
-			loan_dict.update({'loan_amt_300-600':1})
-		else:
-			loan_dict.update({'loan_amt_300-600':0})
+		# if(loan_dict['loan_amount'] >= 300) and (loan_dict['loan_amount'] < 600):
+		# 	loan_dict.update({'loan_amt_300-600':1})
+		# else:
+		# 	loan_dict.update({'loan_amt_300-600':0})
 		
-		if(loan_dict['loan_amount'] >= 600) and (loan_dict['loan_amount'] < 900):
-			loan_dict.update({'loan_amt_600-900':1})
-		else:
-			loan_dict.update({'loan_amt_600-900':0})
+		# if(loan_dict['loan_amount'] >= 600) and (loan_dict['loan_amount'] < 900):
+		# 	loan_dict.update({'loan_amt_600-900':1})
+		# else:
+		# 	loan_dict.update({'loan_amt_600-900':0})
 		
-		if(loan_dict['loan_amount'] >= 900) and (loan_dict['loan_amount'] < 1200):
-			loan_dict.update({'loan_amt_900-1200':1})
-		else:
-			loan_dict.update({'loan_amt_900-1200':0})
+		# if(loan_dict['loan_amount'] >= 900) and (loan_dict['loan_amount'] < 1200):
+		# 	loan_dict.update({'loan_amt_900-1200':1})
+		# else:
+		# 	loan_dict.update({'loan_amt_900-1200':0})
 		
-		if(loan_dict['loan_amount'] >= 1200) and (loan_dict['loan_amount'] < 1500):
-			loan_dict.update({'loan_amt_1200-1500':1})
-		else:
-			loan_dict.update({'loan_amt_1200-1500':0})
+		# if(loan_dict['loan_amount'] >= 1200) and (loan_dict['loan_amount'] < 1500):
+		# 	loan_dict.update({'loan_amt_1200-1500':1})
+		# else:
+		# 	loan_dict.update({'loan_amt_1200-1500':0})
 
-		if(loan_dict['loan_amount'] >= 1500) :
-			loan_dict.update({'loan_amt_>=1500':1})
-		else:
-			loan_dict.update({'loan_amt_>=1500':0})
+		# if(loan_dict['loan_amount'] >= 1500) :
+		# 	loan_dict.update({'loan_amt_>=1500':1})
+		# else:
+		# 	loan_dict.update({'loan_amt_>=1500':0})
 		
 		## sector
 		if(loan_dict['sector'] == 'Agriculture'):
@@ -410,62 +412,62 @@ def add_features(loans):
 	
 
 		## date by year
-		if(loan_dict['posted_date'].year == 2006) or (loan_dict['posted_date'].year == 2007) or (loan_dict['posted_date'].year == 2008):
-			loan_dict.update({'request_year_06-08':1})
-		else:
-			loan_dict.update({'request_year_06-08':0})
+		# if(loan_dict['posted_date'].year == 2006) or (loan_dict['posted_date'].year == 2007) or (loan_dict['posted_date'].year == 2008):
+		# 	loan_dict.update({'request_year_06-08':1})
+		# else:
+		# 	loan_dict.update({'request_year_06-08':0})
 		
-		if(loan_dict['posted_date'].year == 2009) or (loan_dict['posted_date'].year == 2010) :
-			loan_dict.update({'request_year_09-10':1})
-		else:
-			loan_dict.update({'request_year_09-10':0})
+		# if(loan_dict['posted_date'].year == 2009) or (loan_dict['posted_date'].year == 2010) :
+		# 	loan_dict.update({'request_year_09-10':1})
+		# else:
+		# 	loan_dict.update({'request_year_09-10':0})
 		
-		if(loan_dict['posted_date'].year == 2011) or (loan_dict['posted_date'].year == 2012):
-			loan_dict.update({'request_year_11-12':1})
-		else:
-			loan_dict.update({'request_year_11-12':0})
+		# if(loan_dict['posted_date'].year == 2011) or (loan_dict['posted_date'].year == 2012):
+		# 	loan_dict.update({'request_year_11-12':1})
+		# else:
+		# 	loan_dict.update({'request_year_11-12':0})
 		
-		if(loan_dict['posted_date'].year == 2013) or (loan_dict['posted_date'].year == 2014):
-			loan_dict.update({'request_year_13-14':1})
-		else:
-			loan_dict.update({'request_year_13-14':0})
+		# if(loan_dict['posted_date'].year == 2013) or (loan_dict['posted_date'].year == 2014):
+		# 	loan_dict.update({'request_year_13-14':1})
+		# else:
+		# 	loan_dict.update({'request_year_13-14':0})
 		
-		if(loan_dict['posted_date'].year == 2015) or (loan_dict['posted_date'].year == 2016):
-			loan_dict.update({'request_year_15-16':1})
-		else:
-			loan_dict.update({'request_year_15-16':0})
+		# if(loan_dict['posted_date'].year == 2015) or (loan_dict['posted_date'].year == 2016):
+		# 	loan_dict.update({'request_year_15-16':1})
+		# else:
+		# 	loan_dict.update({'request_year_15-16':0})
 		
 		
 		## repayment term
-		if(loan_dict['repayment_term'] >= 0) and (loan_dict['repayment_term'] < 5):
-			loan_dict.update({'repayment_term_0-5':1})
-		else:
-			loan_dict.update({'repayment_term_0-5':0})
+		# if(loan_dict['repayment_term'] >= 0) and (loan_dict['repayment_term'] < 5):
+		# 	loan_dict.update({'repayment_term_0-5':1})
+		# else:
+		# 	loan_dict.update({'repayment_term_0-5':0})
 		
-		if(loan_dict['repayment_term'] >= 5) and (loan_dict['repayment_term'] < 10):
-			loan_dict.update({'repayment_term_5-10':1})
-		else:
-			loan_dict.update({'repayment_term_5-10':0})
+		# if(loan_dict['repayment_term'] >= 5) and (loan_dict['repayment_term'] < 10):
+		# 	loan_dict.update({'repayment_term_5-10':1})
+		# else:
+		# 	loan_dict.update({'repayment_term_5-10':0})
 		
-		if(loan_dict['repayment_term'] >= 10) and (loan_dict['repayment_term'] < 15):
-			loan_dict.update({'repayment_term_10-15':1})
-		else:
-			loan_dict.update({'repayment_term_10-15':0})
+		# if(loan_dict['repayment_term'] >= 10) and (loan_dict['repayment_term'] < 15):
+		# 	loan_dict.update({'repayment_term_10-15':1})
+		# else:
+		# 	loan_dict.update({'repayment_term_10-15':0})
 		
-		if(loan_dict['repayment_term'] >= 15) and (loan_dict['repayment_term'] < 20):
-			loan_dict.update({'repayment_term_15-20':1})
-		else:
-			loan_dict.update({'repayment_term_15-20':0})
+		# if(loan_dict['repayment_term'] >= 15) and (loan_dict['repayment_term'] < 20):
+		# 	loan_dict.update({'repayment_term_15-20':1})
+		# else:
+		# 	loan_dict.update({'repayment_term_15-20':0})
 		
-		if(loan_dict['repayment_term'] >= 20) and (loan_dict['repayment_term'] < 30):
-			loan_dict.update({'repayment_term_20-30':1})
-		else:
-			loan_dict.update({'repayment_term_20-30':0})
+		# if(loan_dict['repayment_term'] >= 20) and (loan_dict['repayment_term'] < 30):
+		# 	loan_dict.update({'repayment_term_20-30':1})
+		# else:
+		# 	loan_dict.update({'repayment_term_20-30':0})
 		
-		if(loan_dict['repayment_term'] >= 30):
-			loan_dict.update({'repayment_term_>=30':1})
-		else:
-			loan_dict.update({'repayment_term_>=30':0})
+		# if(loan_dict['repayment_term'] >= 30):
+		# 	loan_dict.update({'repayment_term_>=30':1})
+		# else:
+		# 	loan_dict.update({'repayment_term_>=30':0})
 		
 
 		## languages
@@ -550,12 +552,43 @@ def add_features_repayment_term(loans, interval):
 		
 	return loans, new_features
 
+def add_features_loan_year(loans, yr1, yr2):
+	new_features = ['request_year<' + str(yr1), 'request_year' + str(yr1) + "-" + str(yr2), 'request_year>' + str(yr2)]
+	for loan in loans:
+		loan_dict = loan[0]
+		loan_year =loan_dict['posted_date'].year
+		if loan_year < yr1:
+			loan_dict.update({'request_year<' + str(yr1):1})
+			loan_dict.update({'request_year' + str(yr1) + "-" + str(yr2):0})
+			loan_dict.update({'request_year>' + str(yr2):0})
+		elif loan_year > yr2:
+			loan_dict.update({'request_year<' + str(yr1):0})
+			loan_dict.update({'request_year' + str(yr1) + "-" + str(yr2):0})
+			loan_dict.update({'request_year>' + str(yr2):1})
+		else:
+			loan_dict.update({'request_year<' + str(yr1):0})
+			loan_dict.update({'request_year' + str(yr1) + "-" + str(yr2):1})
+			loan_dict.update({'request_year>' + str(yr2):0})
+	return loans, new_features
+
+
+def split_data(loans):
+	# divider = random.randint(1, len(loans)-2)
+	divider = 50
+	random.shuffle(loans)
+	print("divider: " + str(divider))
+	data1 = loans[:divider]
+	data2 = loans[divider:]
+	return data1, data2
+
 
 def main():
-	loans, attributes = load_data("loans_A_labeled.csv")
+	loans, attributes = load_data("../loans_A_labeled.csv")
 	loans = add_features(loans)
-	loans, new_amt_features = add_features_loan_amt(loans, 125, 200, 500)
+	loans, new_amt_features = add_features_loan_amt(loans, 200, 500, 500)
 	loans, new_repay_features = add_features_repayment_term(loans, 4)
+	loans, new_year_features = add_features_loan_year(loans, 2008, 2013)
+	a_1, a_2 = split_data(loans)
 	# loans, new_amt_features = add_features_loan_amt(loans, 100, 100, 100)
 	# loans, new_repay_features = add_features_repayment_term(loans, 3)
 	print("num_obs: " + str(len(loans)))
@@ -572,14 +605,15 @@ def main():
 					'positive_description', 'negative_description', 'good_background', 'bad_background',
 					'sector_ag','sector_food', 'sector_clothing', 'sector_housing', 'sector_retail','sector_service', 'sector_others', 
 					'africa_requests', 'america_requests', 'asia_requests', 'aus_europe_requests',
-					'request_year_06-08', 'request_year_09-10', 'request_year_11-12', 'request_year_13-14', 'request_year_15-16',
 					'english_only_description', 'bilingual_description', 'has_spanish_description' ]
-	candidates = candidates + new_amt_features + new_repay_features
-	tree = build_tree(loans, 11, candidates)
+	candidates = candidates + new_amt_features + new_repay_features + new_year_features
+	tree = build_tree(a_1, 6, candidates)
 	print("tree")
 	print(tree)
-	accuracy, mse = find_accuracy(loans, tree)
-	print("accuracy: " + str(accuracy) + " mse: " + str(mse))
+	accuracy, mse = find_accuracy(a_1, tree)
+	print("accuracy A1: " + str(accuracy) + " mse: " + str(mse))
+	accuracy, mse = find_accuracy(a_2, tree)
+	print("accuracy A2: " + str(accuracy) + " mse: " + str(mse))
 
 	# predict_loans, attributes = load_data("../loans_B_unlabeled.csv", train=False)
 	# predict_loans = add_features(predict_loans)
