@@ -527,7 +527,7 @@ def build_forest_tree(inputs, num_levels, num_split_candidates, split_candidates
 		updated_candidates = [x for x in sampled_split_candidates if x != chosen_candidate]
 		partitions = partition_by(inputs, chosen_candidate)
 		# Make a leaf if partitions become too small to prevent overfitting
-		if len(partitions[0]) < 1 or len(partitions[1]) < 1:
+		if len(partitions[0]) < 100 or len(partitions[1]) < 100:
 			return int(statistics.mean(input_days))
 		candidate_dictionary = {
 			1:build_forest_tree(partitions[1], (num_levels-1), num_split_candidates, updated_candidates),
@@ -540,7 +540,7 @@ def build_forest(inputs, num_trees, split_candidates):
 	forest = []
 	for i in range(num_trees):
 		print("☘ Planted " + str(i+1) + " trees ☘")
-		new_tree = build_forest_tree(bootstrap_sample(inputs, 20000), num_levels=6, num_split_candidates=25, split_candidates = split_candidates)
+		new_tree = build_forest_tree(bootstrap_sample(inputs, 10000), num_levels=6, num_split_candidates=25, split_candidates = split_candidates)
 		forest.append(new_tree)
 	return forest
 
@@ -550,7 +550,7 @@ def forest_predict(forest, loan):
 	for tree in forest:
 		prediction += classify(tree, loan[0])
 		predictions.append(classify(tree, loan[0]))
-	return round(prediction / len(forest)) #explain
+	return prediction / len(forest)
 
 def forest_accuracy(forest, loans):
 	correct_predictions = 0
@@ -596,7 +596,7 @@ def main():
 
 	# a_1, a_2 = split_data(loans)
 
-	forest = build_forest(loans, 150, candidates)
+	forest = build_forest(loans, 100, candidates)
 	print("𓋼𓋼𓋼 ~ Forest ~ 𓋼𓋼𓋼")
 	# for i in range(len(forest)):
 	# 	print("𓋼- Tree " + str(i+1) + " -𓋼")
