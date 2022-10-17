@@ -341,7 +341,7 @@ def add_features(loans):
 		
 
 		## divide country into continent groups
-		if(loan_dict['country'] == 'Congo (Dem. Rep.)' or loan_dict['country'] == 'Congo (Rep.)'):
+		if(loan_dict['country'] == 'Congo (Dem. Rep.)' or loan_dict['country'] == 'Congo (Rep.)') or loan_dict['country'] == 'The Democratic Republic of the Congo':
 			loan_dict.update({'africa_requests':1})
 			loan_dict.update({'america_requests':0})
 			loan_dict.update({'asia_requests':0})
@@ -540,10 +540,11 @@ def build_forest(inputs, num_trees, split_candidates):
 	forest = []
 	for i in range(num_trees):
 		print("☘ Planted " + str(i+1) + " trees ☘")
-		new_tree = build_forest_tree(bootstrap_sample(inputs, 10000), num_levels=6, num_split_candidates=25, split_candidates = split_candidates)
+		new_tree = build_forest_tree(bootstrap_sample(inputs, 20000), num_levels=6, num_split_candidates=25, split_candidates = split_candidates)
 		forest.append(new_tree)
 	return forest
 
+# Takes in a loan tuple
 def forest_predict(forest, loan):
 	prediction = 0
 	predictions = []
@@ -558,6 +559,7 @@ def forest_accuracy(forest, loans):
 	for i in range(len(loans)):
 		classification = forest_predict(forest, loans[i])
 		actual = loans[i][1]
+		# print("classification: " + str(classification) + " actual: " + str(actual))
 		if classification == actual:
 			correct_predictions += 1
 		sqr_err += (actual-classification)**2
@@ -569,6 +571,7 @@ def forest_accuracy(forest, loans):
 def main():
 	# loans, attributes = load_data("../loans_AB_labeled.csv")
 	# # loans[:100000]
+	## ---- processing loans from dataset ab
 	# loans = add_features(loans)
 	# loans, new_amt_features = add_features_loan_amt(loans, 200, 400, 800)
 	# loans, new_repay_features = add_features_repayment_term(loans, 4)
@@ -580,23 +583,23 @@ def main():
 	# 				'english_only_description', 'bilingual_description', 'has_spanish_description' ]
 	# candidates = candidates + new_amt_features + new_repay_features + new_year_features
 
-	# ## Save processed loans into file
-	# with open('loans_AB_processed', 'wb') as file:
+	## Save processed loans into file
+	# with open('loans_A_processed', 'wb') as file:
 	# 	pickle.dump(loans, file)
 	# with open('feature_list', 'wb') as file:
 	# 	pickle.dump(candidates, file)
 
-	## Load previously processed loans from file
+	# Load previously processed loans from file
 	with open('loans_AB_processed', 'rb') as file:
 		loans = pickle.load(file)
 	with open('feature_list', 'rb') as file:
 		candidates = pickle.load(file)
 	
 	
-
+	print(len(candidates))
 	# a_1, a_2 = split_data(loans)
 
-	forest = build_forest(loans, 100, candidates)
+	forest = build_forest(loans, 150, candidates)
 	print("𓋼𓋼𓋼 ~ Forest ~ 𓋼𓋼𓋼")
 	# for i in range(len(forest)):
 	# 	print("𓋼- Tree " + str(i+1) + " -𓋼")
@@ -612,27 +615,35 @@ def main():
 	# print("accuracy A1: " + str(accuracy) + " mse: " + str(mse))
 	# accuracy, mse = find_accuracy(a_2, tree)
 	# print("accuracy A2: " + str(accuracy) + " mse: " + str(mse))
-
-	# predict_loans, attributes = load_data("../loans_B_unlabeled.csv", train=False)
+	
+	## ---- processing loans from dataset c
+	# predict_loans, attributes = load_data("../loans_C_unlabeled.csv", train=False)
 	# predict_loans = add_features(predict_loans)
-	# predict_loans, new_amt_features2 = add_features_loan_amt(predict_loans, 125, 200, 500)
-	# predict_loans, new_repay_features2 = add_features_repayment_term(predict_loans, 4)
-	# ids = [loan[0]["id"] for loan in predict_loans]
-	# predictions = []
+	# predict_loans, new_amt_features = add_features_loan_amt(predict_loans, 200, 400, 800)
+	# predict_loans, new_repay_features = add_features_repayment_term(predict_loans, 4)
+	# predict_loans, new_year_features = add_features_loan_year(predict_loans, 2009, 2012)
+
+	# with open('loans_C_processed', 'wb') as file:
+	# 	pickle.dump(predict_loans, file)
+	with open('loans_C_processed', 'rb') as file:
+		predict_loans = pickle.load(file)
+
+	ids = [loan[0]["id"] for loan in predict_loans]
+	predictions = []
 
 	# print(predict_loans[32834][0])
 	
-	# for loan in predict_loans:
-	# 	prediction = classify(tree, loan[0])
-	# 	predictions.append(prediction)
+	for loan in predict_loans:
+		prediction = forest_predict(forest, loan)
+		predictions.append(prediction)
 	
-	# num_prediction_loans = len(ids)
+	num_prediction_loans = len(ids)
 	# print(num_prediction_loans)
 
-	# with open("loans_B_predicted_cxkw.csv", 'w') as file:
-	# 	writer = csv.writer(file)
-	# 	writer.writerow(["ID", "days_until_funded_CX_KW"])
-	# 	for i in range(num_prediction_loans):
-	# 		writer.writerow([str(ids[i]) , str(predictions[i])])
+	with open("loans_C_predicted_cx_kw.csv", 'w') as file:
+		writer = csv.writer(file)
+		writer.writerow(["ID", "days_until_funded_CX_KW"])
+		for i in range(num_prediction_loans):
+			writer.writerow([str(ids[i]) , str(predictions[i])])
 
 main()
