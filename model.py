@@ -499,34 +499,34 @@ def add_features_loan_amt(loans, interval1, interval2, interval3):
 				loan_dict.update({label:1})
 			else:
 				loan_dict.update({label:0})
-		for amt in range (1000, 1500, interval2):
+		for amt in range (1000, 1800, interval2):
 			label = 'loan_amt_' + str(amt) + '-' + str(amt+interval2)
 			if(loan_dict['loan_amount'] >= amt) and (loan_dict['loan_amount'] < amt + interval2):
 				loan_dict.update({label:1})
 			else:
 				loan_dict.update({label:0})
-		for amt in range (1500, 5000, interval3):
+		for amt in range (1800, 4800, interval3):
 			label = 'loan_amt_' + str(amt) + '-' + str(amt+interval3)
 			if(loan_dict['loan_amount'] >= amt) and (loan_dict['loan_amount'] < amt + interval3):
 				loan_dict.update({label:1})
 			else:
 				loan_dict.update({label:0})
 		
-		if(loan_dict['loan_amount'] >= 5000):
-			loan_dict.update({'loan_amt_5000+':1})
+		if(loan_dict['loan_amount'] >= 4800):
+			loan_dict.update({'loan_amt_4800+':1})
 		else:
-			loan_dict.update({'loan_amt_5000+':0})
+			loan_dict.update({'loan_amt_4800+':0})
 
 	for amt in range (0, 1000, interval1):
 		label = 'loan_amt_' + str(amt) + '-' + str(amt+interval1)
 		new_features.append(label)
-	for amt in range (1000, 1500, interval2):
+	for amt in range (1000, 1800, interval2):
 		label = 'loan_amt_' + str(amt) + '-' + str(amt+interval2)
 		new_features.append(label)
-	for amt in range (1500, 5000, interval3):
+	for amt in range (1800, 4800, interval3):
 		label = 'loan_amt_' + str(amt) + '-' + str(amt+interval3)
 		new_features.append(label)
-	new_features.append('loan_amt_5000+')
+	new_features.append('loan_amt_4800+')
 		
 	return loans, new_features
 
@@ -585,9 +585,9 @@ def split_data(loans):
 def main():
 	loans, attributes = load_data("../loans_A_labeled.csv")
 	loans = add_features(loans)
-	loans, new_amt_features = add_features_loan_amt(loans, 200, 500, 500)
+	loans, new_amt_features = add_features_loan_amt(loans, 200, 400, 800)
 	loans, new_repay_features = add_features_repayment_term(loans, 4)
-	loans, new_year_features = add_features_loan_year(loans, 2008, 2013)
+	loans, new_year_features = add_features_loan_year(loans, 2009, 2012)
 	a_1, a_2 = split_data(loans)
 	# loans, new_amt_features = add_features_loan_amt(loans, 100, 100, 100)
 	# loans, new_repay_features = add_features_repayment_term(loans, 3)
@@ -607,7 +607,7 @@ def main():
 					'africa_requests', 'america_requests', 'asia_requests', 'aus_europe_requests',
 					'english_only_description', 'bilingual_description', 'has_spanish_description' ]
 	candidates = candidates + new_amt_features + new_repay_features + new_year_features
-	tree = build_tree(a_1, 6, candidates)
+	tree = build_tree(a_1, 5, candidates)
 	print("tree")
 	print(tree)
 	accuracy, mse = find_accuracy(a_1, tree)
